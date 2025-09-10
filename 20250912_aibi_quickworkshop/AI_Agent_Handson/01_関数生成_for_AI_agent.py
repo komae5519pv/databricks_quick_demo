@@ -4,32 +4,7 @@
 
 # COMMAND ----------
 
-# DBTITLE 1,初期設定
-# カタログ情報
-catalog = "workspace"              # ご自分のカタログ名に変更してください
-schema = "bricksmart"
-# volume = "csv"
-
-# スキーマ、ボリューム再作成(True=再作成, False=スキップ)
-recreate_schema = False
-recreate_volume = False
-
-# COMMAND ----------
-
-# カタログを指定
-spark.sql(f"USE CATALOG {catalog}")
-
-# スキーマを再作成するかどうか
-if recreate_schema:
-    print(f"スキーマ {schema} を一度削除してから作成します")
-    spark.sql(f"DROP SCHEMA IF EXISTS {schema} CASCADE;")
-    spark.sql(f"CREATE SCHEMA IF NOT EXISTS {schema}")
-else:
-    print(f"スキーマ {schema} が存在しない場合は作成します (存在する場合は何もしません)")
-    spark.sql(f"CREATE SCHEMA IF NOT EXISTS {schema}")
-
-# スキーマを使用
-spark.sql(f"USE SCHEMA {schema}")
+# MAGIC %run ../00_config
 
 # COMMAND ----------
 
@@ -83,11 +58,12 @@ RETURN
 # COMMAND ----------
 
 # DBTITLE 1,お試し実行
-display(
-  spark.sql(f"""
+result_df = spark.sql(f"""
+    -- 引数1: 表示件数
     SELECT * FROM get_store_sales_ranking(5)
-  """)
-)
+""")
+store_id = result_df.collect()[0]['store_id']
+display(result_df)
 
 # COMMAND ----------
 
@@ -103,7 +79,7 @@ display(
 # MAGIC 概要：特定エリア・店舗の商品別販売数ランキングを表示（販売点数で降順）  
 # MAGIC 関数：`get_store_item_sales_ranking()`  
 # MAGIC 引数：`p_store_id`: `店舗ID`、`limit_rows`: `表示する行数（Option）`  
-# MAGIC 入力例：店舗IDが7の商品売上ランキング
+# MAGIC 入力例：店舗IDがxxの商品売上ランキング
 
 # COMMAND ----------
 
@@ -161,11 +137,12 @@ RETURN
 # COMMAND ----------
 
 # DBTITLE 1,お試し実行
-display(
-  spark.sql(f"""
-    SELECT * FROM get_store_item_sales_ranking(7,5)
-  """)
-)
+result_df = spark.sql(f"""
+    -- 引数1: 店舗ID、引数2: 表示件数
+    SELECT * FROM get_store_item_sales_ranking({store_id},5)
+""")
+product_id = result_df.collect()[0]['product_id']
+display(result_df)
 
 # COMMAND ----------
 
@@ -181,7 +158,7 @@ display(
 # MAGIC 概要：特定店舗・特定商品の在庫状況  
 # MAGIC 関数：`get_store_product_inventory()`  
 # MAGIC 引数：`p_store_id`: `店舗ID`、`p_product_id`: `商品ID`  
-# MAGIC 入力例：店舗IDが7、商品IDが22の在庫状況は？
+# MAGIC 入力例：店舗IDがxx、商品IDがyyの在庫状況は？
 
 # COMMAND ----------
 
@@ -244,7 +221,7 @@ RETURN
 
 display(
   spark.sql(f"""
-    SELECT * FROM get_store_product_inventory(7, 19)
+    SELECT * FROM get_store_product_inventory({store_id}, {product_id})
   """)
 )
 

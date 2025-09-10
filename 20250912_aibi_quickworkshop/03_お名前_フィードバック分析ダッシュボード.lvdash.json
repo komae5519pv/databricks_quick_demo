@@ -5,7 +5,7 @@
       "displayName": "gold_feedbacks",
       "queryLines": [
         "SELECT *\n",
-        "FROM workspace.bricksmart.gold_feedbacks -- カタログ名をご自身の環境に合わせて変更ください\n"
+        "FROM komae_ex_setup.bricksmart.gold_feedbacks -- カタログ名をご自身の環境に合わせて変更ください\n"
       ]
     }
   ],
