@@ -646,139 +646,139 @@ spark.sql("DROP TABLE feedbacks_temp")
 # COMMAND ----------
 
 # DBTITLE 1,gold_feedbacksテーブル用CSVダウンロードfromGithub(shortcut ver)
-# import requests
-# import os
-# from concurrent.futures import ThreadPoolExecutor
+import requests
+import os
+from concurrent.futures import ThreadPoolExecutor
 
-# # gold_feedbacksテーブル用のCSVをGithubからボリュームにダウンロードする関数
-# class DBDemos:
-#     @staticmethod
-#     def download_file_from_git(dest, owner, repo, path):
-#         def download_file(url, destination):
-#             local_filename = url.split('/')[-1]
-#             with requests.get(url, stream=True) as r:
-#                 r.raise_for_status()
-#                 print(f'Saving {destination}/{local_filename}')
-#                 with open(f'{destination}/{local_filename}', 'wb') as f:
-#                     for chunk in r.iter_content(chunk_size=8192):
-#                         f.write(chunk)
+# gold_feedbacksテーブル用のCSVをGithubからボリュームにダウンロードする関数
+class DBDemos:
+    @staticmethod
+    def download_file_from_git(dest, owner, repo, path):
+        def download_file(url, destination):
+            local_filename = url.split('/')[-1]
+            with requests.get(url, stream=True) as r:
+                r.raise_for_status()
+                print(f'Saving {destination}/{local_filename}')
+                with open(f'{destination}/{local_filename}', 'wb') as f:
+                    for chunk in r.iter_content(chunk_size=8192):
+                        f.write(chunk)
 
-#         if not os.path.exists(dest):
-#             os.makedirs(dest)
+        if not os.path.exists(dest):
+            os.makedirs(dest)
 
-#         api_url = f'https://api.github.com/repos/{owner}/{repo}/contents{path}'
-#         files = requests.get(api_url).json()
-#         download_urls = [f['download_url'] for f in files if isinstance(f, dict) and 'download_url' in f]
+        api_url = f'https://api.github.com/repos/{owner}/{repo}/contents{path}'
+        files = requests.get(api_url).json()
+        download_urls = [f['download_url'] for f in files if isinstance(f, dict) and 'download_url' in f]
 
-#         with ThreadPoolExecutor(max_workers=10) as executor:
-#             executor.map(lambda url: download_file(url, dest), download_urls)
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            executor.map(lambda url: download_file(url, dest), download_urls)
 
-# # ダウンロード実行
-# DBDemos.download_file_from_git(
-#     dest=f"/Volumes/{catalog}/{schema}/{volume}",
-#     owner="komae5519pv",
-#     repo="komae_dbdemos",
-#     path="/bootcamp_20250527/data/"
-# )
+# ダウンロード実行
+DBDemos.download_file_from_git(
+    dest=f"/Volumes/{catalog}/{schema}/{volume}",
+    owner="komae5519pv",
+    repo="databricks_quick_demo",
+    path="/20250912_aibi_quickworkshop/data/"
+)
 
 # COMMAND ----------
 
 # DBTITLE 1,gold_feedbacksテーブルの生成(shortcut ver)
-# from pyspark.sql.types import (
-#     StructType, StructField, StringType, DateType, LongType, FloatType
-# )
+from pyspark.sql.types import (
+    StructType, StructField, StringType, DateType, LongType, FloatType
+)
 
-# # gold_feedback テーブルのスキーマ定義
-# col_schema = StructType([
-#     StructField("feedback_id", LongType(), True),      # フィードバックID (bigint)
-#     StructField("user_id", LongType(), True),          # users.user_id (bigint)
-#     StructField("product_id", LongType(), True),       # products.product_id (bigint)
-#     StructField("rating", FloatType(), True),          # 1〜5 (float)
-#     StructField("date", DateType(), True),             # フィードバック日 (date)
-#     StructField("category", StringType(), True),       # 種別 (string)
-#     StructField("summary", StringType(), True),        # 要約 (string)
-#     StructField("positive_score", FloatType(), True),  # 0.00〜1.00 (float)
-#     StructField("comment", StringType(), True)         # コメント本文 (string)
-# ])
+# gold_feedback テーブルのスキーマ定義
+col_schema = StructType([
+    StructField("feedback_id", LongType(), True),      # フィードバックID (bigint)
+    StructField("user_id", LongType(), True),          # users.user_id (bigint)
+    StructField("product_id", LongType(), True),       # products.product_id (bigint)
+    StructField("rating", FloatType(), True),          # 1〜5 (float)
+    StructField("date", DateType(), True),             # フィードバック日 (date)
+    StructField("category", StringType(), True),       # 種別 (string)
+    StructField("summary", StringType(), True),        # 要約 (string)
+    StructField("positive_score", FloatType(), True),  # 0.00〜1.00 (float)
+    StructField("comment", StringType(), True)         # コメント本文 (string)
+])
 
-# # gold_feedback テーブル作成
-# csv_path = f"/Volumes/{catalog}/{schema}/{volume}/gold_feedback.csv"  # ファイル名まで
-# df = (
-#     spark.read.format("csv")
-#          .option("header", "true")
-#          .option("quote", '"')
-#          .option("escape", '"')
-#          .option("multiLine", "true")
-#          .schema(col_schema)
-#          .load(csv_path)
-# )
-# df.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(
-#     f"{catalog}.{schema}.gold_feedbacks"
-# )
+# gold_feedback テーブル作成
+csv_path = f"/Volumes/{catalog}/{schema}/{volume}/gold_feedback.csv"  # ファイル名まで
+df = (
+    spark.read.format("csv")
+         .option("header", "true")
+         .option("quote", '"')
+         .option("escape", '"')
+         .option("multiLine", "true")
+         .schema(col_schema)
+         .load(csv_path)
+)
+df.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(
+    f"{catalog}.{schema}.gold_feedbacks"
+)
 
-# print(df.count())
-# print(df.columns)   # カラム確認
-# display(df.limit(100))
+print(df.count())
+print(df.columns)   # カラム確認
+display(df.limit(100))
 
 # COMMAND ----------
 
 # DBTITLE 1,gold_feedbacksテーブルの生成(ai_query)
-print("顧客レビューデータの感情スコアリング・分類・要約します...")
-spark.sql(f'''
-CREATE OR REPLACE TABLE {catalog}.{schema}.gold_feedbacks
-SELECT
-  CAST(feedback_id AS BIGINT) AS feedback_id,
-  CAST(user_id AS BIGINT) AS user_id,
-  CAST(product_id AS BIGINT) AS product_id,
-  CAST(rating AS FLOAT) AS rating,
-  CAST(date AS DATE) AS date,
-  -- カテゴリ
-  ai_query(
-    'databricks-llama-4-maverick',
-    CONCAT(
-      "[指示]次の顧客レビュー内容を、次のカテゴリのいずれかに分類してください",
-      "\n[顧客レビュー]" || comment,
-      "\n[分類カテゴリ]",
-      "\n品揃え・在庫",
-      "\n品質",
-      "\nコスパ・お得感",
-      "\n接客・サービス",
-      "\n店舗設備・環境",
-      "\nその他",
-      "\n[厳守事項]",
-      "\n * カテゴリから1つのみ選択してください。",
-      "\n * カテゴリのみ出力してください。補足は一切不要です。"
-    ), failOnError => False
-  ).result AS category,
-  -- 要約
-  ai_query(
-    'databricks-llama-4-maverick',
-    CONCAT(
-      "[指示]次の顧客レビューから要点を絞って、明快で簡潔な一つの文章に要約して下さい",
-      "\n[顧客レビュー]" || comment,
-      "\n[厳守事項]",
-      "\n * 要約結果のみ出力してください。こちらの指示に関する補足は一切不要です。",
-      "\n * 30文字以内に収めること。"
-    ), failOnError => False
-  ).result AS summary,
-  -- ポジティブスコア
-  CAST( 
-    ai_query(
-        'databricks-llama-4-maverick',
-        CONCAT(
-        "[指示]次の顧客レビュー内容について、0~1の間でポジティブスコアを付与してください",
-        "\n[顧客レビュー]" || comment,
-        "\n[出力形式]",
-        "\n * 範囲0~1の少数第二位までで出力してください。",
-        "\n * 1に近いほどポジティブ度合いが強く、0に近いほどポジティブ度合いが弱い。",
-        "\n[厳守事項]",
-        "\n * ポジティブスコアのみ出力してください。補足は一切不要です。"
-        ), failOnError => False
-    ).result AS FLOAT) AS positive_score,
-  comment
-FROM {catalog}.{schema}.feedbacks
-''')
-print("顧客レビューデータの感情スコアリング・分類・要約が完了しました！")
+# print("顧客レビューデータの感情スコアリング・分類・要約します...")
+# spark.sql(f'''
+# CREATE OR REPLACE TABLE {catalog}.{schema}.gold_feedbacks
+# SELECT
+#   CAST(feedback_id AS BIGINT) AS feedback_id,
+#   CAST(user_id AS BIGINT) AS user_id,
+#   CAST(product_id AS BIGINT) AS product_id,
+#   CAST(rating AS FLOAT) AS rating,
+#   CAST(date AS DATE) AS date,
+#   -- カテゴリ
+#   ai_query(
+#     'databricks-llama-4-maverick',
+#     CONCAT(
+#       "[指示]次の顧客レビュー内容を、次のカテゴリのいずれかに分類してください",
+#       "\n[顧客レビュー]" || comment,
+#       "\n[分類カテゴリ]",
+#       "\n品揃え・在庫",
+#       "\n品質",
+#       "\nコスパ・お得感",
+#       "\n接客・サービス",
+#       "\n店舗設備・環境",
+#       "\nその他",
+#       "\n[厳守事項]",
+#       "\n * カテゴリから1つのみ選択してください。",
+#       "\n * カテゴリのみ出力してください。補足は一切不要です。"
+#     ), failOnError => False
+#   ).result AS category,
+#   -- 要約
+#   ai_query(
+#     'databricks-llama-4-maverick',
+#     CONCAT(
+#       "[指示]次の顧客レビューから要点を絞って、明快で簡潔な一つの文章に要約して下さい",
+#       "\n[顧客レビュー]" || comment,
+#       "\n[厳守事項]",
+#       "\n * 要約結果のみ出力してください。こちらの指示に関する補足は一切不要です。",
+#       "\n * 30文字以内に収めること。"
+#     ), failOnError => False
+#   ).result AS summary,
+#   -- ポジティブスコア
+#   CAST( 
+#     ai_query(
+#         'databricks-llama-4-maverick',
+#         CONCAT(
+#         "[指示]次の顧客レビュー内容について、0~1の間でポジティブスコアを付与してください",
+#         "\n[顧客レビュー]" || comment,
+#         "\n[出力形式]",
+#         "\n * 範囲0~1の少数第二位までで出力してください。",
+#         "\n * 1に近いほどポジティブ度合いが強く、0に近いほどポジティブ度合いが弱い。",
+#         "\n[厳守事項]",
+#         "\n * ポジティブスコアのみ出力してください。補足は一切不要です。"
+#         ), failOnError => False
+#     ).result AS FLOAT) AS positive_score,
+#   comment
+# FROM {catalog}.{schema}.feedbacks
+# ''')
+# print("顧客レビューデータの感情スコアリング・分類・要約が完了しました！")
 
 # COMMAND ----------
 
