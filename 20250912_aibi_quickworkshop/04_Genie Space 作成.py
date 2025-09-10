@@ -11,6 +11,8 @@
 # MAGIC %md
 # MAGIC
 # MAGIC ## Genie Spaceを作る
+# MAGIC <img src='https://github.com/komae5519pv/databricks_quick_demo/blob/main/20250912_aibi_quickworkshop/images/Genie%E3%82%B9%E3%83%98%E3%82%9A%E3%83%BC%E3%82%B9.gif?raw=true' width='88%'/>
+# MAGIC
 # MAGIC
 # MAGIC #### データ
 # MAGIC - `gold_feedbacks`
