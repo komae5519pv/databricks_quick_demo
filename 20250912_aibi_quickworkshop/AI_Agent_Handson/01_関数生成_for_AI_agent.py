@@ -236,12 +236,27 @@ display(
 
 # MAGIC %md
 # MAGIC ## 4. AI Agent Playgroundで実行
-# MAGIC Playground へ移動してください  
-# MAGIC 概要：特定店舗・商品を購入しているユーザーの属性傾向をAI agentに調べてもらいます  
-# MAGIC ツール：
-# MAGIC * `get_store_sales_ranking()`　引数：`出力行数`（Option）
-# MAGIC * `get_store_item_sales_ranking()`　引数：`店舗ID`、`商品ID`、`出力行数`（Option）  
-# MAGIC * `get_store_product_inventory()`　引数：`店舗ID`、`商品ID`  
+# MAGIC Playground へ移動してください<br>
+# MAGIC 概要：特定店舗・商品を購入しているユーザーの属性傾向をAI agentに調べてもらいます<br>
 # MAGIC
-# MAGIC システムプロンプト：`あなたはスーパーの売上データの専門家です。質問に対して日本語で回答します。`  
+# MAGIC LLM：`Claude Sonnet 4`<br>
+# MAGIC ツール：
+# MAGIC * `<ご自身のカタログ名>.bricksmart.get_store_sales_ranking()`　引数：`出力行数`（Option）
+# MAGIC * `<ご自身のカタログ名>.bricksmart.get_store_item_sales_ranking()`　引数：`店舗ID`、`商品ID`、`出力行数`（Option）  
+# MAGIC * `<ご自身のカタログ名>.bricksmart.get_store_product_inventory()`　引数：`店舗ID`、`商品ID`  
+# MAGIC
+# MAGIC システムプロンプト：`あなたはスーパーの売上データの専門家です。質問に対して日本語で回答します。`<br>
 # MAGIC 入力例：`一番繁盛しているお店で一番人気の商品の在庫状況を教えて`
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC <img src='https://github.com/komae5519pv/databricks_quick_demo/blob/main/20250912_aibi_quickworkshop/images/Playground.gif?raw=true' width='88%'/>
+# MAGIC
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC 実行結果
+# MAGIC <img src='https://github.com/komae5519pv/databricks_quick_demo/blob/main/20250912_aibi_quickworkshop/images/playground.png?raw=true' width='88%'/>
+# MAGIC
