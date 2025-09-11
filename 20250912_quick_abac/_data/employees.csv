@@ -1,0 +1,11 @@
+employee_id,name,email,department,salary,region
+1,Alice Johnson,alice.j@example.com,Sales,75000.0,APAC
+2,Bob Williams,bob.w@example.com,Marketing,68000.0,EMEA
+3,Charlie Brown,charlie.b@example.com,Engineering,92000.0,Americas
+4,Diana Prince,diana.p@example.com,HR,60000.0,APAC
+5,Eve Davis,eve.d@example.com,Finance,80000.0,EMEA
+6,Frank White,frank.w@example.com,Sales,70000.0,Americas
+7,Grace Lee,grace.l@example.com,Engineering,95000.0,APAC
+8,Henry Kim,henry.k@example.com,Marketing,65000.0,EMEA
+9,Ivy Chen,ivy.c@example.com,HR,58000.0,Americas
+10,Jack Green,jack.g@example.com,Finance,82000.0,APAC
