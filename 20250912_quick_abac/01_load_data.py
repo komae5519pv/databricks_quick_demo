@@ -1,16 +1,11 @@
 # Databricks notebook source
 # MAGIC %md
 # MAGIC # Githubのデータをダウンロード
-# MAGIC - ここではデモ用のサンプルデータをGithubからボリュームにロードします  
-# MAGIC - サーバレス or DBR 16.0ML以降
+# MAGIC サーバレスコンピュートをお使いください
 
 # COMMAND ----------
 
-# %run ../00_config
-
-# COMMAND ----------
-
-print("顧客レビューのCSVファイルをダウンロードします...")
+# MAGIC %run ./00_config
 
 # COMMAND ----------
 
@@ -42,22 +37,10 @@ class DBDemos:
 
 # COMMAND ----------
 
-# 顧客レビューをダウンロード
+# CSVをダウンロード
 DBDemos.download_file_from_git(
     dest=f"/Volumes/{MY_CATALOG}/{MY_SCHEMA}/{MY_VOLUME}",
     owner="komae5519pv",
-    repo="komae_dbdemos",
-    path="/airline_voc_analysis_20250909/_raw_data/"
+    repo="databricks_quick_demo",
+    path="/20250912_quick_abac/_data/"
 )
-
-# 顧客レビュー(論点抽出&サマライズ直後)をダウンロード
-DBDemos.download_file_from_git(
-    dest=f"/Volumes/{MY_CATALOG}/{MY_SCHEMA}/{MY_VOLUME_TMP}",
-    owner="komae5519pv",
-    repo="komae_dbdemos",
-    path="/airline_voc_analysis_20250909/_tmp_data/"
-)
-
-# COMMAND ----------
-
-print("顧客レビューのCSVファイルのダウンロードが完了しました！")
