@@ -1,62 +1,38 @@
 # Databricks notebook source
-# DBTITLE 1,パラメーターの設定
-# Widgetsの作成
-dbutils.widgets.text("catalog", "komae_demo_v3", "カタログ")
-dbutils.widgets.text("schema", "bricksmart", "スキーマ")
-dbutils.widgets.dropdown("recreate_schema", "False", ["True", "False"], "スキーマを再作成")
-dbutils.widgets.text("volume", "csv", "ボリューム")
-dbutils.widgets.dropdown("recreate_volume", "False", ["True", "False"], "ボリュームを再作成")
-
-# Widgetからの値の取得
-catalog = dbutils.widgets.get("catalog")
-schema = dbutils.widgets.get("schema")
-recreate_schema = dbutils.widgets.get("recreate_schema") == "True"
-volume = dbutils.widgets.get("volume")
-recreate_volume = dbutils.widgets.get("recreate_volume") == "True"
+# MAGIC %md
+# MAGIC プログラムでデモデータを生成します
 
 # COMMAND ----------
 
-# DBTITLE 1,パラメーターのチェック
-print(f"catalog: {catalog}")
-print(f"schema: {schema}")
-print(f"recreate_schema: {recreate_schema}")
-print(f"volume: {volume}")
-print(f"recreate_volume: {recreate_volume}")
-
-if not catalog:
-    raise ValueError("存在するカタログ名を入力してください")
-if not schema:
-    raise ValueError("スキーマ名を入力してください")
-if not volume:
-    raise ValueError("ボリューム名を入力してください")
+# MAGIC %run ./00_config
 
 # COMMAND ----------
 
 # DBTITLE 1,カタログ指定・スキーマの設定
-# カタログを指定
-spark.sql(f"USE CATALOG {catalog}")
+# # カタログを指定
+# spark.sql(f"USE CATALOG {catalog}")
 
-# スキーマを再作成するかどうか
-if recreate_schema:
-    print(f"スキーマ {schema} を一度削除してから作成します")
-    spark.sql(f"DROP SCHEMA IF EXISTS {schema} CASCADE;")
-    spark.sql(f"CREATE SCHEMA IF NOT EXISTS {schema}")
-else:
-    print(f"スキーマ {schema} が存在しない場合は作成します (存在する場合は何もしません)")
-    spark.sql(f"CREATE SCHEMA IF NOT EXISTS {schema}")
+# # スキーマを再作成するかどうか
+# if recreate_schema:
+#     print(f"スキーマ {schema} を一度削除してから作成します")
+#     spark.sql(f"DROP SCHEMA IF EXISTS {schema} CASCADE;")
+#     spark.sql(f"CREATE SCHEMA IF NOT EXISTS {schema}")
+# else:
+#     print(f"スキーマ {schema} が存在しない場合は作成します (存在する場合は何もしません)")
+#     spark.sql(f"CREATE SCHEMA IF NOT EXISTS {schema}")
 
-# スキーマを使用
-spark.sql(f"USE SCHEMA {schema}")
+# # スキーマを使用
+# spark.sql(f"USE SCHEMA {schema}")
 
-# ボリュームを再作成するかどうか
-if recreate_volume:
-    print(f"ボリューム {volume} を一度削除してから作成します")
-    spark.sql(f"DROP VOLUME IF EXISTS {catalog}.{schema}.{volume};")
-    spark.sql(f"CREATE VOLUME IF NOT EXISTS {catalog}.{schema}.{volume}")
+# # ボリュームを再作成するかどうか
+# if recreate_volume:
+#     print(f"ボリューム {volume} を一度削除してから作成します")
+#     spark.sql(f"DROP VOLUME IF EXISTS {catalog}.{schema}.{volume};")
+#     spark.sql(f"CREATE VOLUME IF NOT EXISTS {catalog}.{schema}.{volume}")
 
-else:
-    print(f"ボリューム {volume} が存在しない場合は作成します (存在する場合は何もしません)")
-    spark.sql(f"CREATE VOLUME IF NOT EXISTS {catalog}.{schema}.{volume}")
+# else:
+#     print(f"ボリューム {volume} が存在しない場合は作成します (存在する場合は何もしません)")
+#     spark.sql(f"CREATE VOLUME IF NOT EXISTS {catalog}.{schema}.{volume}")
 
 
 # COMMAND ----------

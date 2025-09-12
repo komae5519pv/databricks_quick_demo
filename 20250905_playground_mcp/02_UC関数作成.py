@@ -1,46 +1,54 @@
 # Databricks notebook source
-# Widgetsの作成
-dbutils.widgets.text("catalog", "komae_demo_v3", "カタログ")
-dbutils.widgets.text("schema", "bricksmart", "スキーマ")
-dbutils.widgets.dropdown("recreate_schema", "False", ["True", "False"], "スキーマを再作成")
-
-# Widgetからの値の取得
-catalog = dbutils.widgets.get("catalog")
-schema = dbutils.widgets.get("schema")
-recreate_schema = dbutils.widgets.get("recreate_schema") == "True"
+# MAGIC %run ./00_config
 
 # COMMAND ----------
 
-print(f"catalog: {catalog}")
-print(f"schema: {schema}")
-print(f"recreate_schema: {recreate_schema}")
+# # カタログを指定
+# spark.sql(f"USE CATALOG {catalog}")
 
-if not catalog:
-    raise ValueError("存在するカタログ名を入力してください")
-if not schema:
-    raise ValueError("スキーマ名を入力してください")
+# # スキーマを再作成するかどうか
+# if recreate_schema:
+#     print(f"スキーマ {schema} を一度削除してから作成します")
+#     spark.sql(f"DROP SCHEMA IF EXISTS {schema} CASCADE;")
+#     spark.sql(f"CREATE SCHEMA IF NOT EXISTS {schema}")
+# else:
+#     print(f"スキーマ {schema} が存在しない場合は作成します (存在する場合は何もしません)")
+#     spark.sql(f"CREATE SCHEMA IF NOT EXISTS {schema}")
 
-# COMMAND ----------
-
-# カタログを指定
-spark.sql(f"USE CATALOG {catalog}")
-
-# スキーマを再作成するかどうか
-if recreate_schema:
-    print(f"スキーマ {schema} を一度削除してから作成します")
-    spark.sql(f"DROP SCHEMA IF EXISTS {schema} CASCADE;")
-    spark.sql(f"CREATE SCHEMA IF NOT EXISTS {schema}")
-else:
-    print(f"スキーマ {schema} が存在しない場合は作成します (存在する場合は何もしません)")
-    spark.sql(f"CREATE SCHEMA IF NOT EXISTS {schema}")
-
-# スキーマを使用
-spark.sql(f"USE SCHEMA {schema}")
+# # スキーマを使用
+# spark.sql(f"USE SCHEMA {schema}")
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 1. エリア、店舗ごとの販売ランキング
+# MAGIC ## 1. 本日を取得
+# MAGIC 概要：本日(JST)を取得  
+# MAGIC 関数：`get_today()`  
+# MAGIC 引数：-  
+# MAGIC 入力例：今日の日付は？
+
+# COMMAND ----------
+
+spark.sql(f"""
+CREATE OR REPLACE FUNCTION get_today_jp()
+  RETURNS DATE
+  RETURN
+    SELECT from_utc_timestamp(CURRENT_TIMESTAMP(), 'Asia/Tokyo')::DATE
+""")
+
+# COMMAND ----------
+
+# DBTITLE 1,お試し実行
+display(
+  spark.sql(f"""
+    SELECT get_today_jp()
+  """)
+)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## 2. エリア、店舗ごとの販売ランキング
 # MAGIC 概要：店舗IDごとの売上ランキングを表示（売上金額で降順）  
 # MAGIC 関数：`get_store_sales_ranking()`  
 # MAGIC 引数：`limit_rows`: `表示する行数（Option）`  
@@ -105,7 +113,7 @@ display(
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 2. 特定店舗の売れ筋商品ランキング
+# MAGIC ## 3. 特定店舗の売れ筋商品ランキング
 # MAGIC 概要：特定エリア・店舗の商品別販売数ランキングを表示（販売点数で降順）  
 # MAGIC 関数：`get_store_item_sales_ranking()`  
 # MAGIC 引数：`p_store_id`: `店舗ID`、`limit_rows`: `表示する行数（Option）`  
@@ -183,7 +191,7 @@ display(
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 3. 特定店舗x特定商品の在庫状況の詳細
+# MAGIC ## 4. 特定店舗x特定商品の在庫状況の詳細
 # MAGIC 概要：特定店舗・特定商品の在庫状況  
 # MAGIC 関数：`get_store_product_inventory()`  
 # MAGIC 引数：`p_store_id`: `店舗ID`、`p_product_id`: `商品ID`  
@@ -264,7 +272,7 @@ display(
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 4. AI Agent Playgroundで実行
+# MAGIC ## 5. AI Agent Playgroundで実行
 # MAGIC Playground へ移動してください  
 # MAGIC 概要：特定店舗・商品を購入しているユーザーの属性傾向をAI agentに調べてもらいます  
 # MAGIC ツール：
@@ -272,5 +280,13 @@ display(
 # MAGIC * `get_store_item_sales_ranking()`　引数：`店舗ID`、`商品ID`、`出力行数`（Option）  
 # MAGIC * `get_store_product_inventory()`　引数：`店舗ID`、`商品ID`  
 # MAGIC
-# MAGIC システムプロンプト：`あなたはスーパーの売上データの専門家です。質問に対して日本語で回答します。`  
-# MAGIC 入力例：`一番繁盛しているお店で一番人気の商品の在庫状況を教えて`
+# MAGIC システムプロンプト：<br>
+# MAGIC ```
+# MAGIC あなたはスーパーBricksマートの売り上げ分析を行うエージェントです。質問に対して日本語で回答してください。
+# MAGIC 必要に応じてツールを利用してデータを取得して、簡潔に回答してください。
+# MAGIC 1つの質問回答に対して、ツールの利用は3回以内にしてください。
+# MAGIC データに基づく場合はその旨を、仮説の場合はその旨を明確に明記にしてください。
+# MAGIC ```  
+# MAGIC
+# MAGIC 入力例：<br>
+# MAGIC `一番繁盛しているお店で一番人気の商品の在庫状況を教えて`
