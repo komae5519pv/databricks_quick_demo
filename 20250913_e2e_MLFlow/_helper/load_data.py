@@ -45,24 +45,24 @@ class DBDemos:
 DBDemos.download_file_from_git(
     dest=f"/Volumes/{MY_CATALOG}/{MY_SCHEMA}/{MY_VOLUME}/customer",
     owner="komae5519pv",
-    repo="komae_dbdemos",
-    path="/e2e_ML_20250629/_data/_raw_data/customer/"
+    repo="databricks_quick_demo",
+    path="/20250913_e2e_MLFlow/_data/_raw_data/customer/"
 )
 
 # ml_sample
 DBDemos.download_file_from_git(
     dest=f"/Volumes/{MY_CATALOG}/{MY_SCHEMA}/{MY_VOLUME}/ml_sample",
     owner="komae5519pv",
-    repo="komae_dbdemos",
-    path="/e2e_ML_20250629/_data/_raw_data/ml_sample/"
+    repo="databricks_quick_demo",
+    path="/20250913_e2e_MLFlow/_data/_raw_data/ml_sample/"
 )
 
 # data
 DBDemos.download_file_from_git(
     dest=f"/Volumes/{MY_CATALOG}/{MY_SCHEMA}/{MY_VOLUME}/data",
     owner="komae5519pv",
-    repo="komae_dbdemos",
-    path="/e2e_ML_20250629/_data/_raw_data/data/"
+    repo="databricks_quick_demo",
+    path="/20250913_e2e_MLFlow/_data/_raw_data/data/"
 )
 
 # COMMAND ----------
