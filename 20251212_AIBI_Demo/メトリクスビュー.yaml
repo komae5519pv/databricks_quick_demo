@@ -1,0 +1,43 @@
+version: 1.1
+
+source: komae_demo_v4.aibi.sales_silver
+
+dimensions:
+  - name: order_month
+    expr: "date_trunc('month', order_date)"
+    comment: 受注日を月単位で表したディメンションです。
+    display_name: 受注月
+    format:
+      type: date
+      date_format: locale_short_month
+      leading_zeros: false
+    synonyms:
+      - 月次受注日
+      - Order Month
+  - name: order_week
+    expr: "date_trunc('week', order_date)"
+    comment: 受注日を週単位で表したディメンションです。
+    display_name: 受注週
+    format:
+      type: date
+      date_format: year_week
+      leading_zeros: false
+    synonyms:
+      - 週次受注日
+      - Order Week
+
+measures:
+  - name: 顧客単価
+    expr: SUM(sales_amount) / COUNT(DISTINCT customer_id)
+    comment: 売上金額を購入人数（顧客数）で割った指標です。
+    display_name: 顧客単価
+    format:
+      type: currency
+      currency_code: JPY
+      decimal_places:
+        type: exact
+        places: 0
+      abbreviation: none
+    synonyms:
+      - Customer Unit Price
+      - 客単価
