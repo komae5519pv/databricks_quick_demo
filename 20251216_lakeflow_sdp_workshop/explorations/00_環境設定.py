@@ -6,11 +6,10 @@
 # COMMAND ----------
 
 # カタログ名を指定。ワークショップ参加者全員共通
-# CATALOG_NAME = "workshop_all"
-CATALOG_NAME = "komae_demo_v4"
+CATALOG_NAME = "workshop_all"
 
 # スキーマ名を指定。各参加者毎にユニークな名称にする。
-SCHEMA_NAME = "lakeflow_workshop"
+SCHEMA_NAME = "lakeflow_workshop_<お名前>"
 
 # COMMAND ----------
 
