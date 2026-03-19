@@ -7,10 +7,15 @@
 # MAGIC %md
 # MAGIC
 # MAGIC ## 1. Genie Spaceを作る
-# MAGIC ![Genieスペース作成.gif](./_image/Genieスペース作成.gif "Genieスペース作成.gif")
+# MAGIC カタログのテーブル`sales_silver`上で「Genieスペース」を作成<br>
+# MAGIC ![Genieスペース作成.png](./_image/1_create_genie.png "Genieスペース作成.png")
+# MAGIC
+# MAGIC Genieに登録したいテーブルを全て選ぶ<br>
+# MAGIC ![テーブル選択.png](./_image/2_select_tables.png "テーブル選択.png")
 # MAGIC
 # MAGIC #### データ
 # MAGIC - `{catalog}.{schema}.sales_silver`
+# MAGIC - `{catalog}.{schema}.sales_silver_metric_view`
 # MAGIC
 # MAGIC #### 設定<br>
 # MAGIC - Title: `スーパーストアGenie`
@@ -27,8 +32,6 @@
 # MAGIC   * 顧客・製品・地域・期間別の売上・利益・返品状況などに関する質問に対して、プロフェッショナルなアナリストとして分析・示唆出しをします。
 # MAGIC   * 回答の最後に深掘りの質問案を提示して
 # MAGIC   ```
-# MAGIC
-# MAGIC
 
 # COMMAND ----------
 
