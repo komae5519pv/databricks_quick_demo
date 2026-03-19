@@ -7,10 +7,9 @@
 # COMMAND ----------
 
 # DBTITLE 1,変数設定
-catalog = "komae_demo_v4"      # カタログ名（既存）
-schema = "aibi_superstore"     # スキーマ名（新規）
+catalog = "<カタログ名>"          # 任意のカタログ名に変更してください
+schema = "aibi_superstore"      # 任意のスキーマ名に変更してください
 volume = "raw"                  # ボリューム名
-workspace_path = "/Workspace/Users/konomi.omae@databricks.com/03_External_Work/20260318_AIBI_Dashboard"
 
 # COMMAND ----------
 
@@ -34,6 +33,5 @@ print("=== スーパーストアダッシュボード設定 ===")
 print(f"catalog        : {catalog}")
 print(f"schema         : {schema}")
 print(f"volume         : {volume}")
-print(f"workspace_path : {workspace_path}")
-print(f"CSVパス（Workspace）: {workspace_path}/Sample-Superstore_Japanese.csv")
+print(f"CSVパス（Workspace）: ./Sample-Superstore_Japanese.csv")
 print(f"CSVパス（Volume）   : /Volumes/{catalog}/{schema}/{volume}/Sample-Superstore_Japanese.csv")

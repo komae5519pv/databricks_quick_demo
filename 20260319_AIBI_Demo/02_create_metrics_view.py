@@ -15,7 +15,7 @@
 # MAGIC ## 1. メトリクスビューを作成
 # MAGIC
 # MAGIC **手順：**
-# MAGIC 1. Catalog Explorerで `komae_demo_v4.aibi_superstore.sales_silver` を右クリック
+# MAGIC 1. Catalog Explorerで `{catalog}.{schema}.sales_silver` を右クリック
 # MAGIC 2. **Create** → **Metric View** を選択
 # MAGIC 3. 名前：`sales_silver_metric_view`
 # MAGIC 4. 下記のYAMLをコピー＆ペースト
@@ -33,6 +33,8 @@
 # MAGIC   margin: 16px 0;
 # MAGIC ">
 # MAGIC
+# MAGIC {catalog}.{schema}.sales_silver の「{catalog}.{schema}」の部分はご自身のカタログ名.スキーマ名に差し替えてください。
+# MAGIC
 # MAGIC ##### スーパーストア売上メトリクスビュー
 # MAGIC <details>
 # MAGIC   <summary>YAMLを展開</summary>
@@ -43,7 +45,7 @@
 # MAGIC <code>
 # MAGIC version: 1.1
 # MAGIC
-# MAGIC source: komae_demo_v4.aibi_superstore.sales_silver
+# MAGIC source: {catalog}.{schema}.sales_silver
 # MAGIC
 # MAGIC dimensions:
 # MAGIC   - name: order_month
